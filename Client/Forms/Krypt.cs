@@ -16,19 +16,5 @@ namespace Client
         {
             InitializeComponent();
         }
-
-        private void btnStatus_Click(object sender, EventArgs e)
-        {
-            if (btnStatus.Text == "Connect")
-            {
-                Program.Connect();
-                btnStatus.Text = "Disconnect";
-            }
-            else
-            {
-                Program.Shutdown();
-                btnStatus.Text = "Connect";
-            }
-        }
     }
 }

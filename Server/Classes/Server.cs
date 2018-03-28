@@ -96,6 +96,7 @@ namespace Server
                         break;
 
                     case "exit":
+                        netServer.Shutdown("Shutdown");
                         Exit(0);
                         break;
                 }
