@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Server.Classes
+namespace Server
 {
     public static class Logging
     {

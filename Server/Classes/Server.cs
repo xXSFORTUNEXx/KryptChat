@@ -6,18 +6,17 @@ using System.Threading;
 using static System.Console;
 using static System.Environment;
 
-namespace Server.Classes
+namespace Server
 {
     class Program
     {
         static NetServer netServer;
-        static NetPeerConfiguration netConfig;
         static void Main(string[] args)
         {
             Title = "Krypt Chat Server";
             Logging.WriteMessage("Loading Please Wait...");
 
-            netConfig = new NetPeerConfiguration("kryptChat")
+            NetPeerConfiguration netConfig = new NetPeerConfiguration("kryptChat")
             {
                 Port = 14242,
                 UseMessageRecycling = true,
@@ -48,12 +47,14 @@ namespace Server.Classes
         static int frameRate;
         public void Loop(NetServer netServer)
         {
+            IncomingData incData = new IncomingData();
             Logging.WriteMessage("Listening For Connections...");
             Thread inputThread = new Thread(() => UserInput(netServer));
             inputThread.Start();
             while (true)
             {
                 Title = "Krypt Chat Server - CPS: " + CalculateCyclesPerSecond();
+                incData.HandleIncomingData(netServer);
                 Thread.Sleep(10);
             }
         }

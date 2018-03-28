@@ -4,7 +4,7 @@ using static System.Console;
 using static System.Threading.Thread;
 using System.Data.SqlClient;
 
-namespace Server.Classes
+namespace Server
 {
     public class IncomingData
     {
@@ -74,11 +74,6 @@ namespace Server.Classes
 
     public enum Packet : byte
     {
-        Connection,
-        Register,
-        Login,
-        Error,
-        Notification,
-        CharacterData
+        Connection
     }
 }
