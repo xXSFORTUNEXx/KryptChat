@@ -12,7 +12,6 @@ namespace Client
 {
     public partial class Login : Form
     {
-        static int recheck;
         public Login()
         {
             InitializeComponent();
@@ -24,8 +23,8 @@ namespace Client
             if (Program.netClient.ServerConnection == null)
             {
                 Program.Connect();
-                recheck = 1;
             }
+            else { tmrConnect.Enabled = false; }
         }
 
         private void lblNewUser_MouseHover(object sender, EventArgs e)
@@ -40,7 +39,7 @@ namespace Client
 
         private void lblNewUser_Click(object sender, EventArgs e)
         {
-            Program.Disconnect();
+            
         }
     }
 }

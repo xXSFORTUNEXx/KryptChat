@@ -117,8 +117,8 @@
             // slblStatus
             // 
             this.slblStatus.Name = "slblStatus";
-            this.slblStatus.Size = new System.Drawing.Size(116, 17);
-            this.slblStatus.Text = "Server Status: Offline";
+            this.slblStatus.Size = new System.Drawing.Size(152, 17);
+            this.slblStatus.Text = "Server Status: Disconnected";
             // 
             // tmrConnect
             // 

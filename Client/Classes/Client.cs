@@ -41,8 +41,7 @@ namespace Client
 
         public static void Disconnect()
         {
-            netClient.Disconnect("Shutdown by user");
- 
+            netClient.Disconnect("Shutdown by user"); 
         }
     }
 
