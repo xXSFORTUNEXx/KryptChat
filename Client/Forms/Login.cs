@@ -24,7 +24,6 @@ namespace Client
             {
                 Program.Connect();
             }
-            else { tmrConnect.Enabled = false; }
         }
 
         private void lblNewUser_MouseHover(object sender, EventArgs e)

@@ -97,6 +97,7 @@
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(177, 20);
             this.txtUsername.TabIndex = 5;
+            this.txtUsername.Text = "sfortune";
             // 
             // txtPassword
             // 
@@ -105,6 +106,7 @@
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(177, 20);
             this.txtPassword.TabIndex = 6;
+            this.txtPassword.Text = "fortune1";
             // 
             // stpStatus
             // 
@@ -125,7 +127,7 @@
             // tmrConnect
             // 
             this.tmrConnect.Enabled = true;
-            this.tmrConnect.Interval = 4000;
+            this.tmrConnect.Interval = 5000;
             this.tmrConnect.Tick += new System.EventHandler(this.tmrConnect_Tick);
             // 
             // lblNewUser

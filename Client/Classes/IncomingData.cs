@@ -30,11 +30,22 @@ namespace Client
                             case (byte)Packet.ErrorMessage:
                                 HandleErrorMessage(incMSG);
                                 break;
+
+                            case (byte)Packet.ActivateAccount:
+                                HandleActivateAccount(incMSG);
+                                break;
                         }
                         break;
                 }
                 Program.netClient.Recycle(incMSG);
             }
+        }
+
+        private static void HandleActivateAccount(NetIncomingMessage incMSG)
+        {
+            Program.tempSlot = incMSG.ReadVariableInt32();
+            Activate activate = new Activate();
+            activate.ShowDialog();
         }
 
         private static void HandleErrorMessage(NetIncomingMessage incMSG)

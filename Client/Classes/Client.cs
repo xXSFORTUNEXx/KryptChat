@@ -11,12 +11,15 @@ namespace Client
     {
         public static NetClient netClient;
         public static Login login;
+        public static Account[] accounts = new Account[Globals.MAX_ACCOUNTS];
+        public static int tempSlot;
 
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            InitializeArrays();
             login = new Login();
 
             NetPeerConfiguration netConfig = new NetPeerConfiguration("kryptChat")
@@ -31,6 +34,13 @@ namespace Client
 
             netClient.Shutdown("Shutdown");
         }
+        private static void InitializeArrays()
+        {
+            for (int i = 0; i < Globals.MAX_ACCOUNTS; i++)
+            {
+                accounts[i] = new Account();
+            }
+        }
         public static void Connect()
         {
             int port = Globals.SERVER_PORT;
@@ -38,7 +48,6 @@ namespace Client
             netClient.Start();
             netClient.DiscoverLocalPeers(port);
         }
-
         public static void Disconnect()
         {
             netClient.Disconnect("Shutdown by user"); 
@@ -60,6 +69,7 @@ namespace Client
         Connection,
         Registration,
         ErrorMessage,
-        Login
+        Login,
+        ActivateAccount
     }
 }

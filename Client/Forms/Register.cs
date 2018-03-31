@@ -38,11 +38,11 @@ namespace Client
                 {
                     if (pass == rpass)
                     {
-                        OutgoingData.SendRegistration(name, pass, email);                        
+                        OutgoingData.SendRegistration(name, pass, email);
+                        Close();
                     }
                 }
             }
-            Close();
         }
     }
 }

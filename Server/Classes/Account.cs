@@ -19,27 +19,67 @@ namespace Server
 
         public Account() { }
 
-        public Account(NetConnection connection)
+        public Account(int id, string name, NetConnection connection)
         {
+            ID = id;
+            Name = name;
             netConnection = connection;
         }
         
-        public Account(string name, string pass, string emailAddress, NetConnection connection)
+        public Account(int id, string name, string pass, string emailAddress, NetConnection connection)
         {
+            ID = id;
             Name = name;
             Password = pass;
             EmailAddress = emailAddress;
             netConnection = connection;
         }
 
-        public Account(string name, string pass, string emailAddress, string lastLogin, string accountKey, NetConnection connection)
+        public Account(int id, string name, string pass, string emailAddress, string lastLogin, string accountKey, NetConnection connection)
         {
+            ID = id;
             Name = name;
             Password = pass;
             EmailAddress = emailAddress;
             LastLogin = lastLogin;
             AccountKey = accountKey;
             netConnection = connection;
+        }
+
+        public void UpdateAccountStatusInDatabase()
+        {
+            string sqlCommand = "UPDATE ACCOUNTS SET ACTIVE = 'Y' WHERE ID = @id";
+            string connection = @"Data Source=FDESKTOP-01\SFORTUNESQL;Initial Catalog=KRYPT;Integrated Security=True";
+            using (SqlConnection conn = new SqlConnection(connection))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(sqlCommand, conn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.Int).Value = ID;
+                    cmd.ExecuteNonQuery();
+                }
+                Logging.WriteLog("[DB Update] : " + sqlCommand);
+            }
+        }
+
+        public bool IsAccountActive()
+        {
+            string result = "E";
+            string sqlCommand = "SELECT ACTIVE FROM ACCOUNTS WHERE ID = @id";
+            string connection = @"Data Source=FDESKTOP-01\SFORTUNESQL;Initial Catalog=KRYPT;Integrated Security=True";
+            using (SqlConnection conn = new SqlConnection(connection))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand(sqlCommand, conn))
+                {
+                    cmd.Parameters.Add("@id", SqlDbType.VarChar).Value = ID;
+                    result = cmd.ExecuteScalar().ToString();
+                }
+                Logging.WriteLog("[DB Insert] : " + sqlCommand);
+
+                if (result == "N") { return false; }
+                else { return true; }
+            }
         }
 
         public void CreateAccountInDatabase()
@@ -110,7 +150,7 @@ namespace Server
             }
         }
 
-        public void GetIdFromDatabase(string name)
+        public int GetIdFromDatabase(string name)
         {
             string sqlCommand = "SELECT * FROM ACCOUNTS WHERE USERNAME = @name";
             string connection = @"Data Source=FDESKTOP-01\SFORTUNESQL;Initial Catalog=KRYPT;Integrated Security=True";
@@ -118,17 +158,19 @@ namespace Server
             {
                 conn.Open();
                 Logging.WriteLog("[DB Insert] : " + sqlCommand);
+                int id = 0;
                 using (SqlCommand cmd = new SqlCommand(sqlCommand, conn))
                 {
-                    cmd.Parameters.Add("@name", SqlDbType.Int).Value = name;
+                    cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = name;
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            ID = reader.GetInt32(0);
+                            id = reader.GetInt32(0);
                         }
                     }
                 }
+                return id;
             }
         }
 

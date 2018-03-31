@@ -85,13 +85,13 @@ namespace Server
         public static bool CheckPassword(string name, string pass)
         {
             string sqlCommand = "SELECT * FROM ACCOUNTS WHERE USERNAME=@name";
-            string connection = @"Data Source=FDESKTOP-01\SFORTUNESQL;Initial Catalog=Scorched;Integrated Security=True";
+            string connection = @"Data Source=FDESKTOP-01\SFORTUNESQL;Initial Catalog=KRYPT;Integrated Security=True";
             using (SqlConnection conn = new SqlConnection(connection))
             {
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(sqlCommand, conn))
                 {
-                    cmd.Parameters.Add("@name", System.Data.SqlDbType.Text).Value = name;
+                    cmd.Parameters.Add("@name", System.Data.SqlDbType.VarChar).Value = name;
                     Logging.WriteLog("[DB Query] : " + sqlCommand);
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {

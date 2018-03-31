@@ -154,6 +154,8 @@ namespace Server
     {
         Connection,
         Registration,
-        ErrorMessage
+        ErrorMessage,
+        Login,
+        ActivateAccount
     }
 }

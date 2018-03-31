@@ -30,6 +30,14 @@ namespace Server
                             case (byte)Packet.Registration:
                                 HandleRegistrationRequest(incMSG);
                                 break;
+
+                            case (byte)Packet.Login:
+                                HandleLoginRequest(incMSG);
+                                break;
+
+                            case (byte)Packet.ActivateAccount:
+                                HandleActivateAccount(incMSG);
+                                break;
                         }
                         break;
 
@@ -39,6 +47,39 @@ namespace Server
                 }
             }
             Program.netServer.Recycle(incMSG);
+        }
+
+        private void HandleActivateAccount(NetIncomingMessage incMSG)
+        {
+            string code = incMSG.ReadString();
+            int slot = incMSG.ReadVariableInt32();
+
+            if (code == Server.accounts[slot].AccountKey)
+            {
+                Logging.WriteMessage("Account activated! Code: " + code + " username: " + Server.accounts[slot].Name);
+                Server.accounts[slot].UpdateAccountStatusInDatabase();
+            }
+            else { OutgoingData.SendErrorMessage("Error", "Invalid code please try again.", incMSG.SenderConnection); return; }
+        }
+        private void HandleLoginRequest(NetIncomingMessage incMSG)
+        {
+            string name = incMSG.ReadString();
+            string pass = incMSG.ReadString();
+
+            int openSlot = OpenSlot(Server.accounts);
+            if (openSlot < Globals.MAX_ACCOUNTS + 1)
+            {
+                if (MSSQL.AccountExist(name) && MSSQL.CheckPassword(name, pass))
+                {
+                    int id = Server.accounts[openSlot].GetIdFromDatabase(name);
+                    Server.accounts[openSlot] = new Account(id, name, incMSG.SenderConnection);
+                    Server.accounts[openSlot].LoadAccountFromDatabase(id);
+                    Logging.WriteMessage("Id: " + id + " username: " + name + " connection: " + incMSG.SenderConnection.ToString());
+                    if (!Server.accounts[openSlot].IsAccountActive()) { OutgoingData.SendActivateMessage(openSlot, incMSG.SenderConnection); return; }
+                }
+                else { OutgoingData.SendErrorMessage("Invalid Login", "Invalid username or password.", incMSG.SenderConnection); return; }
+            }
+            else { Logging.WriteMessage("Server is full!"); OutgoingData.SendErrorMessage("Full", "The server is full!", incMSG.SenderConnection); return; }
         }
         private void HandleRegistrationRequest(NetIncomingMessage incMSG)
         {
@@ -56,6 +97,7 @@ namespace Server
                     Server.accounts[openSlot].EmailAddress = email;
                     Server.accounts[openSlot].CreateAccountInDatabase();
                     Logging.WriteMessage("Username: " + name + " Email: " + email);
+                    Server.accounts[openSlot] = new Account();
                 }
                 else { Logging.WriteMessage("Server is full!"); OutgoingData.SendErrorMessage("Full", "The server is full!", incMSG.SenderConnection); return; }
             }

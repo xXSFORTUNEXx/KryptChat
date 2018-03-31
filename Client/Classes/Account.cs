@@ -19,20 +19,31 @@ namespace Client
 
         public Account() { }
 
-        public Account(string name, string pass, string emailAddress)
+        public Account(int id, string name, NetConnection connection)
         {
+            ID = id;
+            Name = name;
+            netConnection = connection;
+        }
+
+        public Account(int id, string name, string pass, string emailAddress, NetConnection connection)
+        {
+            ID = id;
             Name = name;
             Password = pass;
             EmailAddress = emailAddress;
+            netConnection = connection;
         }
 
-        public Account(string name, string pass, string emailAddress, string lastLogin, string accountKey)
+        public Account(int id, string name, string pass, string emailAddress, string lastLogin, string accountKey, NetConnection connection)
         {
+            ID = id;
             Name = name;
             Password = pass;
             EmailAddress = emailAddress;
             LastLogin = lastLogin;
             AccountKey = accountKey;
+            netConnection = connection;
         }
     }
 }

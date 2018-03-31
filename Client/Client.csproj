@@ -48,6 +48,12 @@
     <Compile Include="Classes\Account.cs" />
     <Compile Include="Classes\IncomingData.cs" />
     <Compile Include="Classes\OutgoingData.cs" />
+    <Compile Include="Forms\Activate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Activate.Designer.cs">
+      <DependentUpon>Activate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Krypt.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -68,6 +74,9 @@
       <DependentUpon>Register.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\Activate.resx">
+      <DependentUpon>Activate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Krypt.resx">
       <DependentUpon>Krypt.cs</DependentUpon>
     </EmbeddedResource>

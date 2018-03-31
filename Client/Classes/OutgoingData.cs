@@ -14,13 +14,22 @@ namespace Client
             Program.netClient.SendMessage(outMSG, NetDeliveryMethod.ReliableOrdered);
             Program.netClient.FlushSendQueue();
         }
-
         public static void SendLogin(string name, string password)
         {
             NetOutgoingMessage outMSG = Program.netClient.CreateMessage();
             outMSG.Write((byte)Packet.Login);
             outMSG.Write(name);
             outMSG.Write(password);
+            Program.netClient.SendMessage(outMSG, NetDeliveryMethod.ReliableOrdered);
+            Program.netClient.FlushSendQueue();
+        }
+        
+        public static void SendCode(string code)
+        {
+            NetOutgoingMessage outMSG = Program.netClient.CreateMessage();
+            outMSG.Write((byte)Packet.ActivateAccount);
+            outMSG.Write(code);
+            outMSG.WriteVariableInt32(Program.tempSlot);
             Program.netClient.SendMessage(outMSG, NetDeliveryMethod.ReliableOrdered);
             Program.netClient.FlushSendQueue();
         }
