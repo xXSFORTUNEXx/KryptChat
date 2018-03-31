@@ -59,6 +59,7 @@ namespace Client
     {
         Connection,
         Registration,
-        Test
+        ErrorMessage,
+        Login
     }
 }

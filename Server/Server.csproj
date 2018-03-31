@@ -47,6 +47,7 @@
     <Compile Include="Classes\IncomingData.cs" />
     <Compile Include="Classes\Logging.cs" />
     <Compile Include="Classes\MSSQL.cs" />
+    <Compile Include="Classes\OutgoingData.cs" />
     <Compile Include="Classes\Server.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

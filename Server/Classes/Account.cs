@@ -44,7 +44,7 @@ namespace Server
 
         public void CreateAccountInDatabase()
         {
-            string sqlCommand = "INSERT INTO ACCOUNTS (USERNAME,PASSWORD,EMAIL_ADDRESS,LAST_LOGIN,ACCOUNT_KEY) VALUES (@name,@password,@email,(SELECT FORMAT(CURRENT_TIMESTAMP, 'yyyy-dd-MM HH:mm:ss.fff', 'en-US')),@key)";
+            string sqlCommand = "INSERT INTO ACCOUNTS (USERNAME,PASSWORD,EMAIL_ADDRESS,LAST_LOGIN,ACCOUNT_KEY,ACTIVE) VALUES (@name,@password,@email,(SELECT FORMAT(CURRENT_TIMESTAMP, 'yyyy-dd-MM HH:mm:ss.fff', 'en-US')),@key,'N')";
             string connection = @"Data Source=FDESKTOP-01\SFORTUNESQL;Initial Catalog=KRYPT;Integrated Security=True";
             AccountKey = Key(25);
             using (SqlConnection conn = new SqlConnection(connection))

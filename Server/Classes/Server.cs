@@ -8,9 +8,9 @@ using static System.Environment;
 
 namespace Server
 {
-    class Program
+    public class Program
     {
-        static NetServer netServer;
+        public static NetServer netServer;
         static void Main(string[] args)
         {
             Title = "Krypt Chat Server";
@@ -38,33 +38,32 @@ namespace Server
             netServer.Start();
             Logging.WriteMessage("Configuration Applied, Server Started");
 
-            Server server = new Server();
-            server.Loop(netServer);
+            Server.Loop();
         }
     }
 
-    class Server
+    public static class Server
     {
         static int lastTick;
         static int lastFrameRate;
         static int frameRate;
-        Account[] accounts = new Account[Globals.MAX_ACCOUNTS];
-        public void Loop(NetServer netServer)
+        public static Account[] accounts = new Account[Globals.MAX_ACCOUNTS];
+        public static void Loop()
         {
             IncomingData incData = new IncomingData();
             Logging.WriteMessage("Listening For Connections...");
-            Thread inputThread = new Thread(() => UserInput(netServer));
+            Thread inputThread = new Thread(() => UserInput());
             inputThread.Start();
             InitializeArrays();
             while (true)
             {
                 Title = "Krypt Chat Server - CPS: " + CalculateCyclesPerSecond();
-                incData.HandleIncomingData(netServer, accounts);
+                incData.HandleIncomingData();
                 Thread.Sleep(10);
             }
         }
 
-        public void InitializeArrays()
+        private static void InitializeArrays()
         {
             for (int i = 0; i < Globals.MAX_ACCOUNTS; i++)
             {
@@ -72,7 +71,7 @@ namespace Server
             }
         }
 
-        void UserInput(NetServer netServer)
+        private static void UserInput()
         {
             string input;
             while (true)
@@ -89,15 +88,15 @@ namespace Server
                         break;
 
                     case "stats":
-                        string stats = netServer.Statistics.ToString();
+                        string stats = Program.netServer.Statistics.ToString();
                         WriteLine(stats);
                         Logging.WriteLog(stats);
                         break;
 
                     case "ifconfig":
                         string localIP = NetUtility.Resolve(Dns.GetHostName()).ToString();
-                        string broadcastAddress = netServer.Configuration.BroadcastAddress.ToString();
-                        string port = netServer.Configuration.Port.ToString();
+                        string broadcastAddress = Program.netServer.Configuration.BroadcastAddress.ToString();
+                        string port = Program.netServer.Configuration.Port.ToString();
                         string netInfo = string.Format("Public IP: {0}\nLocal IP: {1}\nBroadcast Address: {2}\nPort: {3}", GetPublicIPAddress(), localIP, broadcastAddress, port);
                         WriteLine(netInfo);
                         Logging.WriteLog(netInfo);
@@ -109,14 +108,14 @@ namespace Server
                         break;
 
                     case "exit":
-                        netServer.Shutdown("Shutdown");
+                        Program.netServer.Shutdown("Shutdown");
                         Exit(0);
                         break;
                 }
             }
         }
 
-        static int CalculateCyclesPerSecond()
+        private static int CalculateCyclesPerSecond()
         {
             if (TickCount - lastTick >= 1000)
             {
@@ -128,7 +127,7 @@ namespace Server
             return lastFrameRate;
         }
 
-        protected string GetPublicIPAddress()
+        private static string GetPublicIPAddress()
         {
             try
             {
@@ -155,6 +154,6 @@ namespace Server
     {
         Connection,
         Registration,
-        Test
+        ErrorMessage
     }
 }

@@ -24,6 +24,7 @@ namespace Client
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
+            if (Program.netClient.ServerConnection == null) { MessageBox.Show("No server connection. Please wait and try again."); return; }
             string name = txtRUser.Text;
             string pass = txtRPass.Text;
             string rpass = txtRRPass.Text;

@@ -24,13 +24,25 @@ namespace Client
                         switch (incMSG.ReadByte())
                         {
                             case (byte)Packet.Connection:
-                                MessageBox.Show("Connected!");
+                                //MessageBox.Show("Connected!");
+                                break;
+
+                            case (byte)Packet.ErrorMessage:
+                                HandleErrorMessage(incMSG);
                                 break;
                         }
                         break;
                 }
                 Program.netClient.Recycle(incMSG);
             }
+        }
+
+        private static void HandleErrorMessage(NetIncomingMessage incMSG)
+        {
+            string title = incMSG.ReadString();
+            string message = incMSG.ReadString();
+
+            MessageBox.Show(message, title);
         }
 
         private static void HandleDiscoveryResponse(NetIncomingMessage incMSG)

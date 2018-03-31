@@ -15,10 +15,12 @@ namespace Client
             Program.netClient.FlushSendQueue();
         }
 
-        public static void TestData()
+        public static void SendLogin(string name, string password)
         {
             NetOutgoingMessage outMSG = Program.netClient.CreateMessage();
-            outMSG.Write((byte)Packet.Test);
+            outMSG.Write((byte)Packet.Login);
+            outMSG.Write(name);
+            outMSG.Write(password);
             Program.netClient.SendMessage(outMSG, NetDeliveryMethod.ReliableOrdered);
             Program.netClient.FlushSendQueue();
         }

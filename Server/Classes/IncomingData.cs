@@ -8,42 +8,39 @@ namespace Server
 {
     public class IncomingData
     {
-        public void HandleIncomingData(NetServer netServer, Account[] accounts)
+        public void HandleIncomingData()
         {
             NetIncomingMessage incMSG;
 
-            if ((incMSG = netServer.ReadMessage()) != null)
+            if ((incMSG = Program.netServer.ReadMessage()) != null)
             {
                 switch (incMSG.MessageType)
                 {
                     case NetIncomingMessageType.DiscoveryRequest:
-                        HandleDiscoveryRequest(incMSG, netServer);
+                        HandleDiscoveryRequest(incMSG);
                         break;
 
                     case NetIncomingMessageType.ConnectionApproval:
-                        HandleConnectionApproval(incMSG, netServer);
+                        HandleConnectionApproval(incMSG);
                         break;
 
                     case NetIncomingMessageType.Data:
                         switch (incMSG.ReadByte())
                         {
                             case (byte)Packet.Registration:
-                                HandleRegistrationRequest(incMSG, netServer, accounts);
-                                break;
-                            case (byte)Packet.Test:
-                                WriteLine("This is a test");
+                                HandleRegistrationRequest(incMSG);
                                 break;
                         }
                         break;
 
                     case NetIncomingMessageType.StatusChanged:
-                        HandleStatusChange(incMSG, netServer);
+                        HandleStatusChange(incMSG);
                         break;
                 }
             }
-            netServer.Recycle(incMSG);
+            Program.netServer.Recycle(incMSG);
         }
-        private void HandleRegistrationRequest(NetIncomingMessage incMSG, NetServer netServer, Account[] accounts)
+        private void HandleRegistrationRequest(NetIncomingMessage incMSG)
         {
             string name = incMSG.ReadString();
             string pass = incMSG.ReadString();
@@ -51,27 +48,27 @@ namespace Server
 
             if (!MSSQL.AccountExist(name))
             {
-                int openSlot = OpenSlot(accounts);
+                int openSlot = OpenSlot(Server.accounts);
                 if (openSlot < (Globals.MAX_ACCOUNTS + 1))
                 {
-                    accounts[openSlot].Name = name;
-                    accounts[openSlot].Password = pass;
-                    accounts[openSlot].EmailAddress = email;
-                    accounts[openSlot].CreateAccountInDatabase();
+                    Server.accounts[openSlot].Name = name;
+                    Server.accounts[openSlot].Password = pass;
+                    Server.accounts[openSlot].EmailAddress = email;
+                    Server.accounts[openSlot].CreateAccountInDatabase();
                     Logging.WriteMessage("Username: " + name + " Email: " + email);
                 }
-                else { Logging.WriteMessage("Server is full!"); return; }
+                else { Logging.WriteMessage("Server is full!"); OutgoingData.SendErrorMessage("Full", "The server is full!", incMSG.SenderConnection); return; }
             }
-            else { Logging.WriteMessage("Account already exists!"); return; }
+            else { Logging.WriteMessage("Account already exists!"); OutgoingData.SendErrorMessage("Exists", "That account already exists!", incMSG.SenderConnection); return; }
         }
-        private void HandleDiscoveryRequest(NetIncomingMessage incMSG, NetServer netServer)
+        private void HandleDiscoveryRequest(NetIncomingMessage incMSG)
         {
             Logging.WriteMessage("Client Discovered @ " + incMSG.SenderEndPoint.ToString());
-            NetOutgoingMessage outMSG = netServer.CreateMessage();
+            NetOutgoingMessage outMSG = Program.netServer.CreateMessage();
             outMSG.Write("Krypt Chat Server");
-            netServer.SendDiscoveryResponse(outMSG, incMSG.SenderEndPoint);
+            Program.netServer.SendDiscoveryResponse(outMSG, incMSG.SenderEndPoint);
         }
-        private void HandleConnectionApproval(NetIncomingMessage incMSG, NetServer netServer)
+        private void HandleConnectionApproval(NetIncomingMessage incMSG)
         {
             if (incMSG.ReadByte() == (byte)Packet.Connection)
             {
@@ -80,14 +77,14 @@ namespace Server
                 {
                     incMSG.SenderConnection.Approve();
                     Sleep(500);
-                    NetOutgoingMessage outMSG = netServer.CreateMessage();
+                    NetOutgoingMessage outMSG = Program.netServer.CreateMessage();
                     outMSG.Write((byte)Packet.Connection);
-                    netServer.SendMessage(outMSG, incMSG.SenderConnection, NetDeliveryMethod.ReliableOrdered);
+                    Program.netServer.SendMessage(outMSG, incMSG.SenderConnection, NetDeliveryMethod.ReliableOrdered);
                 }
                 else { incMSG.SenderConnection.Deny(); }
             }
         }
-        private void HandleStatusChange(NetIncomingMessage incMSG, NetServer netServer)
+        private void HandleStatusChange(NetIncomingMessage incMSG)
         {
             Logging.WriteMessage(incMSG.SenderConnection.ToString() + " status changed. " + incMSG.SenderConnection.Status);
         }

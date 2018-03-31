@@ -51,7 +51,18 @@ namespace Client
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            OutgoingData.TestData();
+            if (Program.netClient.ServerConnection == null) { MessageBox.Show("No server connection. Please wait and try again."); return; }
+
+            string name = txtUsername.Text;
+            string password = txtPassword.Text;
+
+            if (name != null && name.Length > 3)
+            {
+                if (password != null && password.Length >= 8)
+                {
+                    OutgoingData.SendLogin(name, password);
+                }
+            }
         }
     }
 }
