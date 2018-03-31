@@ -18,22 +18,25 @@ namespace Server
 
             NetPeerConfiguration netConfig = new NetPeerConfiguration("kryptChat")
             {
-                Port = 14242,
+                Port = Globals.SERVER_PORT,
                 UseMessageRecycling = true,
-                MaximumConnections = 5,
+                MaximumConnections = Globals.MAX_ACCOUNTS,
                 EnableUPnP = false,
-                ConnectionTimeout = 5.0f,
+                ConnectionTimeout = Globals.CONNECTION_TIMEOUT,
             };
-            Logging.WriteMessage("Configuration Complete...");
+            Logging.WriteMessage("Configuration Complete");
 
             netConfig.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
             netConfig.EnableMessageType(NetIncomingMessageType.ConnectionLatencyUpdated);
             netConfig.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
             Logging.WriteMessage("Message Types Enabled: ConnectionApproval, Latency, Request");
 
+            MSSQL.DatabaseExists();
+            Logging.WriteMessage("SQL Database Complete");
+
             netServer = new NetServer(netConfig);
             netServer.Start();
-            Logging.WriteMessage("Configuration Applied, Server Started...");
+            Logging.WriteMessage("Configuration Applied, Server Started");
 
             Server server = new Server();
             server.Loop(netServer);
@@ -45,17 +48,27 @@ namespace Server
         static int lastTick;
         static int lastFrameRate;
         static int frameRate;
+        Account[] accounts = new Account[Globals.MAX_ACCOUNTS];
         public void Loop(NetServer netServer)
         {
             IncomingData incData = new IncomingData();
             Logging.WriteMessage("Listening For Connections...");
             Thread inputThread = new Thread(() => UserInput(netServer));
             inputThread.Start();
+            InitializeArrays();
             while (true)
             {
                 Title = "Krypt Chat Server - CPS: " + CalculateCyclesPerSecond();
-                incData.HandleIncomingData(netServer);
+                incData.HandleIncomingData(netServer, accounts);
                 Thread.Sleep(10);
+            }
+        }
+
+        public void InitializeArrays()
+        {
+            for (int i = 0; i < Globals.MAX_ACCOUNTS; i++)
+            {
+                accounts[i] = new Account();
             }
         }
 
@@ -126,5 +139,22 @@ namespace Server
             }
             catch { return null; }
         }
+    }
+
+    public static class Globals
+    {
+        public const byte NO = 0;
+        public const byte YES = 1;
+        public const int MAX_ACCOUNTS = 5;
+        public const string IP_ADDRESS = "10.16.0.8";
+        public const int SERVER_PORT = 14242;
+        public const float CONNECTION_TIMEOUT = 5.0f;
+    }
+
+    public enum Packet : byte
+    {
+        Connection,
+        Registration,
+        Test
     }
 }

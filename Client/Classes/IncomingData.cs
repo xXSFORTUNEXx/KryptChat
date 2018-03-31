@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Lidgren.Network;
+﻿using Lidgren.Network;
+using System.Windows.Forms;
 
 namespace Client
 {
@@ -17,18 +13,18 @@ namespace Client
                 switch (incMSG.MessageType)
                 {
                     case NetIncomingMessageType.DiscoveryResponse:
-                        HandleDiscoveryResponse(incMSG, Program.netClient);
+                        HandleDiscoveryResponse(incMSG);
                         break;
 
                     case NetIncomingMessageType.StatusChanged:
-                        HandleStatusChange(incMSG, Program.netClient);
+                        HandleStatusChange(incMSG);
                         break;
 
                     case NetIncomingMessageType.Data:
                         switch (incMSG.ReadByte())
                         {
                             case (byte)Packet.Connection:
-
+                                MessageBox.Show("Connected!");
                                 break;
                         }
                         break;
@@ -37,18 +33,15 @@ namespace Client
             }
         }
 
-        private static void HandleDiscoveryResponse(NetIncomingMessage incMSG, NetClient netClient)
+        private static void HandleDiscoveryResponse(NetIncomingMessage incMSG)
         {
-            string ipAddress = "10.16.0.8";
-            int port = 14242;
-
-            NetOutgoingMessage outMSG = netClient.CreateMessage();
+            NetOutgoingMessage outMSG = Program.netClient.CreateMessage();
             outMSG.Write((byte)Packet.Connection);
             outMSG.Write("kryptChat");
-            netClient.Connect(ipAddress, port, outMSG);
+            Program.netClient.Connect(Globals.IP_ADDRESS, Globals.SERVER_PORT, outMSG);
         }
 
-        private static void HandleStatusChange(NetIncomingMessage incMSG, NetClient g_Client)
+        private static void HandleStatusChange(NetIncomingMessage incMSG)
         {
             Program.login.slblStatus.Text = "Server Status: " + incMSG.SenderConnection.Status;
         }

@@ -45,7 +45,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Account.cs" />
     <Compile Include="Classes\IncomingData.cs" />
+    <Compile Include="Classes\OutgoingData.cs" />
     <Compile Include="Forms\Krypt.cs">
       <SubType>Form</SubType>
     </Compile>

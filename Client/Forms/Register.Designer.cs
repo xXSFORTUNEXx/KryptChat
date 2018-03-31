@@ -85,20 +85,25 @@
             this.txtRUser.Name = "txtRUser";
             this.txtRUser.Size = new System.Drawing.Size(177, 20);
             this.txtRUser.TabIndex = 4;
+            this.txtRUser.Text = "sfortune";
             // 
             // txtRPass
             // 
             this.txtRPass.Location = new System.Drawing.Point(51, 92);
             this.txtRPass.Name = "txtRPass";
+            this.txtRPass.PasswordChar = '*';
             this.txtRPass.Size = new System.Drawing.Size(177, 20);
             this.txtRPass.TabIndex = 5;
+            this.txtRPass.Text = "fortune1";
             // 
             // txtRRPass
             // 
             this.txtRRPass.Location = new System.Drawing.Point(51, 131);
             this.txtRRPass.Name = "txtRRPass";
+            this.txtRRPass.PasswordChar = '*';
             this.txtRRPass.Size = new System.Drawing.Size(177, 20);
             this.txtRRPass.TabIndex = 6;
+            this.txtRRPass.Text = "fortune1";
             // 
             // txtREmail
             // 
@@ -106,6 +111,7 @@
             this.txtREmail.Name = "txtREmail";
             this.txtREmail.Size = new System.Drawing.Size(177, 20);
             this.txtREmail.TabIndex = 7;
+            this.txtREmail.Text = "sfortune@fortune.naw";
             // 
             // btnCancel
             // 
@@ -115,6 +121,7 @@
             this.btnCancel.TabIndex = 8;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnRegister
             // 
@@ -124,6 +131,7 @@
             this.btnRegister.TabIndex = 9;
             this.btnRegister.Text = "Register";
             this.btnRegister.UseVisualStyleBackColor = true;
+            this.btnRegister.Click += new System.EventHandler(this.btnRegister_Click);
             // 
             // stpRStatus
             // 
@@ -131,6 +139,7 @@
             this.slblRStatus});
             this.stpRStatus.Location = new System.Drawing.Point(0, 250);
             this.stpRStatus.Name = "stpRStatus";
+            this.stpRStatus.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.stpRStatus.Size = new System.Drawing.Size(275, 22);
             this.stpRStatus.TabIndex = 10;
             this.stpRStatus.Text = "Status";
@@ -174,13 +183,13 @@
         private System.Windows.Forms.Label lblRPass;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblREmail;
-        private System.Windows.Forms.TextBox txtRUser;
-        private System.Windows.Forms.TextBox txtRPass;
-        private System.Windows.Forms.TextBox txtRRPass;
-        private System.Windows.Forms.TextBox txtREmail;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnRegister;
         private System.Windows.Forms.StatusStrip stpRStatus;
         private System.Windows.Forms.ToolStripStatusLabel slblRStatus;
+        public System.Windows.Forms.TextBox txtRUser;
+        public System.Windows.Forms.TextBox txtRPass;
+        public System.Windows.Forms.TextBox txtRRPass;
+        public System.Windows.Forms.TextBox txtREmail;
     }
 }

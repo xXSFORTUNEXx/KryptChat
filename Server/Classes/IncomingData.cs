@@ -8,7 +8,7 @@ namespace Server
 {
     public class IncomingData
     {
-        public void HandleIncomingData(NetServer netServer)
+        public void HandleIncomingData(NetServer netServer, Account[] accounts)
         {
             NetIncomingMessage incMSG;
 
@@ -24,18 +24,45 @@ namespace Server
                         HandleConnectionApproval(incMSG, netServer);
                         break;
 
-                    case NetIncomingMessageType.StatusChanged:
-                        HandleStatusChange(incMSG, netServer);
-                        break;
-
                     case NetIncomingMessageType.Data:
                         switch (incMSG.ReadByte())
                         {
-
+                            case (byte)Packet.Registration:
+                                HandleRegistrationRequest(incMSG, netServer, accounts);
+                                break;
+                            case (byte)Packet.Test:
+                                WriteLine("This is a test");
+                                break;
                         }
+                        break;
+
+                    case NetIncomingMessageType.StatusChanged:
+                        HandleStatusChange(incMSG, netServer);
                         break;
                 }
             }
+            netServer.Recycle(incMSG);
+        }
+        private void HandleRegistrationRequest(NetIncomingMessage incMSG, NetServer netServer, Account[] accounts)
+        {
+            string name = incMSG.ReadString();
+            string pass = incMSG.ReadString();
+            string email = incMSG.ReadString();
+
+            if (!MSSQL.AccountExist(name))
+            {
+                int openSlot = OpenSlot(accounts);
+                if (openSlot < (Globals.MAX_ACCOUNTS + 1))
+                {
+                    accounts[openSlot].Name = name;
+                    accounts[openSlot].Password = pass;
+                    accounts[openSlot].EmailAddress = email;
+                    accounts[openSlot].CreateAccountInDatabase();
+                    Logging.WriteMessage("Username: " + name + " Email: " + email);
+                }
+                else { Logging.WriteMessage("Server is full!"); return; }
+            }
+            else { Logging.WriteMessage("Account already exists!"); return; }
         }
         private void HandleDiscoveryRequest(NetIncomingMessage incMSG, NetServer netServer)
         {
@@ -63,17 +90,17 @@ namespace Server
         private void HandleStatusChange(NetIncomingMessage incMSG, NetServer netServer)
         {
             Logging.WriteMessage(incMSG.SenderConnection.ToString() + " status changed. " + incMSG.SenderConnection.Status);
-            if (incMSG.SenderConnection.Status == NetConnectionStatus.Disconnected || incMSG.SenderConnection.Status == NetConnectionStatus.Disconnecting)
-            {
-                Logging.WriteMessage("Disconnected, clearing data...");
-                //Clear data
-                Logging.WriteMessage("Data cleared, connection now open.");
-            }
         }
-    }
-
-    public enum Packet : byte
-    {
-        Connection
+        private static int OpenSlot(Account[] accounts)
+        {
+            for (int i = 0; i < Globals.MAX_ACCOUNTS; i++)
+            {
+                if (accounts[i].Name == null)
+                {
+                    return i;
+                }
+            }
+            return Globals.MAX_ACCOUNTS + 1;
+        }
     }
 }

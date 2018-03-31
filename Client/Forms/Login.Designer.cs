@@ -69,6 +69,7 @@
             this.btnLogin.TabIndex = 2;
             this.btnLogin.Text = "Login";
             this.btnLogin.UseVisualStyleBackColor = true;
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
             // btnCancel
             // 
@@ -76,8 +77,9 @@
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 3;
-            this.btnCancel.Text = "Cancel";
+            this.btnCancel.Text = "Quit";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // chkRemember
             // 
@@ -122,6 +124,7 @@
             // 
             // tmrConnect
             // 
+            this.tmrConnect.Enabled = true;
             this.tmrConnect.Interval = 4000;
             this.tmrConnect.Tick += new System.EventHandler(this.tmrConnect_Tick);
             // 
@@ -156,6 +159,7 @@
             this.Controls.Add(this.lblPassword);
             this.Controls.Add(this.lblUsername);
             this.Name = "Login";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Login";
             this.stpStatus.ResumeLayout(false);
             this.stpStatus.PerformLayout();
@@ -170,12 +174,12 @@
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.CheckBox chkRemember;
         private System.Windows.Forms.TextBox txtUsername;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.StatusStrip stpStatus;
         public System.Windows.Forms.Timer tmrConnect;
         public System.Windows.Forms.ToolStripStatusLabel slblStatus;
         public System.Windows.Forms.Label lblNewUser;
+        public System.Windows.Forms.CheckBox chkRemember;
     }
 }

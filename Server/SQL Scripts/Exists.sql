@@ -1,0 +1,8 @@
+IF EXISTS(SELECT * FROM sys.sysdatabases WHERE name = 'KRYPT')
+BEGIN
+	SELECT 1
+END
+ELSE
+BEGIN
+	SELECT 0
+END

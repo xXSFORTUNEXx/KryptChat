@@ -33,7 +33,7 @@ namespace Client
         }
         public static void Connect()
         {
-            int port = 14242;
+            int port = Globals.SERVER_PORT;
 
             netClient.Start();
             netClient.DiscoverLocalPeers(port);
@@ -45,8 +45,20 @@ namespace Client
         }
     }
 
+    public static class Globals
+    {
+        public const byte NO = 0;
+        public const byte YES = 1;
+        public const int MAX_ACCOUNTS = 5;
+        public const string IP_ADDRESS = "10.16.0.8";
+        public const int SERVER_PORT = 14242;
+        public const float CONNECTION_TIMEOUT = 5.0f;
+    }
+
     public enum Packet : byte
     {
-        Connection
+        Connection,
+        Registration,
+        Test
     }
 }
