@@ -40,7 +40,7 @@ namespace Client
         private void lblNewUser_Click(object sender, EventArgs e)
         {
             Register register = new Register();
-            register.Show();
+            register.ShowDialog();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -51,7 +51,7 @@ namespace Client
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-
+            OutgoingData.TestData();
         }
     }
 }

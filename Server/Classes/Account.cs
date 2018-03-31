@@ -44,7 +44,7 @@ namespace Server
 
         public void CreateAccountInDatabase()
         {
-            string sqlCommand = "INSERT INTO ACCOUNTS (USERNAME,PASSWORD,EMAIL_ADDRESS,LAST_LOGIN,ACCOUNT_KEY) VALUES (@name,@password,@email,@lastlogin,@key)";
+            string sqlCommand = "INSERT INTO ACCOUNTS (USERNAME,PASSWORD,EMAIL_ADDRESS,LAST_LOGIN,ACCOUNT_KEY) VALUES (@name,@password,@email,(SELECT FORMAT(CURRENT_TIMESTAMP, 'yyyy-dd-MM HH:mm:ss.fff', 'en-US')),@key)";
             string connection = @"Data Source=FDESKTOP-01\SFORTUNESQL;Initial Catalog=KRYPT;Integrated Security=True";
             AccountKey = Key(25);
             using (SqlConnection conn = new SqlConnection(connection))
@@ -52,11 +52,10 @@ namespace Server
                 conn.Open();
                 using (SqlCommand cmd = new SqlCommand(sqlCommand, conn))
                 {
-                    cmd.Parameters.Add("@name", SqlDbType.Text).Value = Name;
-                    cmd.Parameters.Add("@password", SqlDbType.Text).Value = Password;
-                    cmd.Parameters.Add("@email", SqlDbType.Text).Value = EmailAddress;
-                    cmd.Parameters.Add("@lastlogin", SqlDbType.Text).Value = LastLogin;
-                    cmd.Parameters.Add("@key", SqlDbType.Text).Value = AccountKey;
+                    cmd.Parameters.Add("@name", SqlDbType.VarChar).Value = Name;
+                    cmd.Parameters.Add("@password", SqlDbType.VarChar).Value = Password;
+                    cmd.Parameters.Add("@email", SqlDbType.VarChar).Value = EmailAddress;
+                    cmd.Parameters.Add("@key", SqlDbType.VarChar).Value = AccountKey;
                     cmd.ExecuteNonQuery();
                 }
                 Logging.WriteLog("[DB Insert] : " + sqlCommand);
@@ -92,7 +91,7 @@ namespace Server
 
         public void UpdateAccountInDatabase()
         {
-            string sqlCommand = "UPDATE ACCOUNTS SET NAME = @name,PASSWORD = @password,EMAIL_ADDRESS = @email,LAST_LOGIN = (SELECT FORMAT(CURRENT_TIMESTAMP, 'yyyy-dd-MM HH:mm:ss.fff', 'en-US')),ACCOUNT_KEY = @key WHERE ID = @id";
+            string sqlCommand = "UPDATE ACCOUNTS SET USERNAME = @name,PASSWORD = @password,EMAIL_ADDRESS = @email,LAST_LOGIN = @lastlogin,ACCOUNT_KEY = @key WHERE ID = @id";
             string connection = @"Data Source=FDESKTOP-01\SFORTUNESQL;Initial Catalog=KRYPT;Integrated Security=True";
             using (SqlConnection conn = new SqlConnection(connection))
             {
@@ -113,7 +112,7 @@ namespace Server
 
         public void GetIdFromDatabase(string name)
         {
-            string sqlCommand = "SELECT * FROM ACCOUNTS WHERE NAME = @name";
+            string sqlCommand = "SELECT * FROM ACCOUNTS WHERE USERNAME = @name";
             string connection = @"Data Source=FDESKTOP-01\SFORTUNESQL;Initial Catalog=KRYPT;Integrated Security=True";
             using (SqlConnection conn = new SqlConnection(connection))
             {

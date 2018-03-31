@@ -12,6 +12,7 @@ namespace Client
             outMSG.Write(password);
             outMSG.Write(emailaddress);
             Program.netClient.SendMessage(outMSG, NetDeliveryMethod.ReliableOrdered);
+            Program.netClient.FlushSendQueue();
         }
 
         public static void TestData()
@@ -19,6 +20,7 @@ namespace Client
             NetOutgoingMessage outMSG = Program.netClient.CreateMessage();
             outMSG.Write((byte)Packet.Test);
             Program.netClient.SendMessage(outMSG, NetDeliveryMethod.ReliableOrdered);
+            Program.netClient.FlushSendQueue();
         }
     }
 }

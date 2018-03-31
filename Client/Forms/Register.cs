@@ -41,6 +41,7 @@ namespace Client
                     }
                 }
             }
+            Close();
         }
     }
 }

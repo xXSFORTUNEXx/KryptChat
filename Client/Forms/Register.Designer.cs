@@ -85,7 +85,6 @@
             this.txtRUser.Name = "txtRUser";
             this.txtRUser.Size = new System.Drawing.Size(177, 20);
             this.txtRUser.TabIndex = 4;
-            this.txtRUser.Text = "sfortune";
             // 
             // txtRPass
             // 
@@ -94,7 +93,6 @@
             this.txtRPass.PasswordChar = '*';
             this.txtRPass.Size = new System.Drawing.Size(177, 20);
             this.txtRPass.TabIndex = 5;
-            this.txtRPass.Text = "fortune1";
             // 
             // txtRRPass
             // 
@@ -103,7 +101,6 @@
             this.txtRRPass.PasswordChar = '*';
             this.txtRRPass.Size = new System.Drawing.Size(177, 20);
             this.txtRRPass.TabIndex = 6;
-            this.txtRRPass.Text = "fortune1";
             // 
             // txtREmail
             // 
@@ -111,7 +108,6 @@
             this.txtREmail.Name = "txtREmail";
             this.txtREmail.Size = new System.Drawing.Size(177, 20);
             this.txtREmail.TabIndex = 7;
-            this.txtREmail.Text = "sfortune@fortune.naw";
             // 
             // btnCancel
             // 
