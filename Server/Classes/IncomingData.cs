@@ -96,6 +96,7 @@ namespace Server
                     Server.accounts[openSlot].Password = pass;
                     Server.accounts[openSlot].EmailAddress = email;
                     Server.accounts[openSlot].CreateAccountInDatabase();
+                    OutgoingData.SendActivationEmail(Server.accounts[openSlot].AccountKey, email);
                     Logging.WriteMessage("Username: " + name + " Email: " + email);
                     Server.accounts[openSlot] = new Account();
                 }

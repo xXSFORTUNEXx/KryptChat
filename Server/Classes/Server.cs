@@ -146,7 +146,11 @@ namespace Server
         public const byte YES = 1;
         public const int MAX_ACCOUNTS = 5;
         public const string IP_ADDRESS = "10.16.0.8";
+        public const string SMTP_IP_ADDRESS = "mail.fortune.naw";
         public const int SERVER_PORT = 14242;
+        public const int SMTP_SERVER_PORT = 25;
+        public const string SMTP_USER_CREDS = "webmaster@fortune.naw";
+        public const string SMTP_PASS_CREDS = "Fortune123*";
         public const float CONNECTION_TIMEOUT = 5.0f;
     }
 
