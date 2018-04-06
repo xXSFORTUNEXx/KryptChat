@@ -62,6 +62,7 @@ namespace Client
                     OutgoingData.SendLogin(name, password);
                 }
             }
+            Hide();
         }
     }
 }

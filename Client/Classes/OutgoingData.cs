@@ -33,5 +33,15 @@ namespace Client
             Program.netClient.SendMessage(outMSG, NetDeliveryMethod.ReliableOrdered);
             Program.netClient.FlushSendQueue();
         }
+
+        public static void SendMessage(string message)
+        {
+            NetOutgoingMessage outMSG = Program.netClient.CreateMessage();
+            outMSG.Write((byte)Packet.Message);
+            outMSG.Write(message);
+            outMSG.Write(Program.tempName);
+            Program.netClient.SendMessage(outMSG, NetDeliveryMethod.ReliableOrdered);
+            Program.netClient.FlushSendQueue();
+        }
     }
 }

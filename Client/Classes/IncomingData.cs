@@ -34,6 +34,18 @@ namespace Client
                             case (byte)Packet.ActivateAccount:
                                 HandleActivateAccount(incMSG);
                                 break;
+
+                            case (byte)Packet.Login:
+                                HandleLogin(incMSG);
+                                break;
+
+                            case (byte)Packet.WhosOnline:
+                                HandleWhosOnline(incMSG);
+                                break;
+
+                            case (byte)Packet.Message:
+                                HandleMessage(incMSG);
+                                break;
                         }
                         break;
                 }
@@ -41,8 +53,36 @@ namespace Client
             }
         }
 
+        public static void HandleMessage(NetIncomingMessage incMSG)
+        {
+            string message = incMSG.ReadString();
+
+            Program.krypt.txtGlobalChat.AppendText("\n" + message);
+        }
+
+        private static void HandleWhosOnline(NetIncomingMessage incMSG)
+        {
+            Program.krypt.lstOnline.Items.Clear();
+            Program.krypt.lstOnline.Items.Add("Online:");
+            for (int i = 0; i < Globals.MAX_ACCOUNTS; i++)
+            {
+                Program.accounts[i].ID = incMSG.ReadVariableInt32();
+                Program.accounts[i].Name = incMSG.ReadString();
+                Program.krypt.lstOnline.Items.Add(Program.accounts[i].Name);
+            }
+
+        }
+
+        private static void HandleLogin(NetIncomingMessage incMSG)
+        {
+            Program.tempName = incMSG.ReadString();
+            Program.krypt = new Krypt();
+            Program.krypt.Show();
+        }
+
         private static void HandleActivateAccount(NetIncomingMessage incMSG)
         {
+            Program.tempName = incMSG.ReadString();
             Program.tempSlot = incMSG.ReadVariableInt32();
             Activate activate = new Activate();
             activate.ShowDialog();

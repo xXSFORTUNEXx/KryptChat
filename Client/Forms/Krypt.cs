@@ -15,6 +15,23 @@ namespace Client
         public Krypt()
         {
             InitializeComponent();
+            txtGlobalChat.Text = "[" + DateTime.Now.ToString() + "] Welcome to Krypt Chat!";
+        }
+
+        private void Krypt_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Program.login.Show();
+        }
+
+        private void txtMessage_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (txtMessage.Text == "") { return; }
+
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                OutgoingData.SendMessage(txtMessage.Text);
+                txtMessage.Text = "";
+            }
         }
     }
 }

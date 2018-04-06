@@ -11,8 +11,10 @@ namespace Client
     {
         public static NetClient netClient;
         public static Login login;
+        public static Krypt krypt;
         public static Account[] accounts = new Account[Globals.MAX_ACCOUNTS];
         public static int tempSlot;
+        public static string tempName;
 
         [STAThread]
         static void Main()
@@ -70,6 +72,8 @@ namespace Client
         Registration,
         ErrorMessage,
         Login,
-        ActivateAccount
+        ActivateAccount,
+        WhosOnline,
+        Message
     }
 }

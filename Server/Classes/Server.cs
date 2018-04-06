@@ -160,6 +160,8 @@ namespace Server
         Registration,
         ErrorMessage,
         Login,
-        ActivateAccount
+        ActivateAccount,
+        WhosOnline,
+        Message
     }
 }

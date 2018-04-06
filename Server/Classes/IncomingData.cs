@@ -38,6 +38,10 @@ namespace Server
                             case (byte)Packet.ActivateAccount:
                                 HandleActivateAccount(incMSG);
                                 break;
+
+                            case (byte)Packet.Message:
+                                HandleMessage(incMSG);
+                                break;
                         }
                         break;
 
@@ -49,6 +53,16 @@ namespace Server
             Program.netServer.Recycle(incMSG);
         }
 
+        private void HandleMessage(NetIncomingMessage incMSG)
+        {
+            string message = incMSG.ReadString();
+            string name = incMSG.ReadString();
+
+            string final = "[" + DateTime.Now.ToString() + "] " + name + ": " + message;
+            Logging.WriteMessage(final, "Chat");
+            OutgoingData.SendMessageToAll(final);
+        }
+
         private void HandleActivateAccount(NetIncomingMessage incMSG)
         {
             string code = incMSG.ReadString();
@@ -58,6 +72,8 @@ namespace Server
             {
                 Logging.WriteMessage("Account activated! Code: " + code + " username: " + Server.accounts[slot].Name);
                 Server.accounts[slot].UpdateAccountStatusInDatabase();
+                OutgoingData.SendLogin(Server.accounts[slot].Name, incMSG.SenderConnection);
+                OutgoingData.SendWhosOnline(Server.accounts);
             }
             else { OutgoingData.SendErrorMessage("Error", "Invalid code please try again.", incMSG.SenderConnection); return; }
         }
@@ -69,15 +85,21 @@ namespace Server
             int openSlot = OpenSlot(Server.accounts);
             if (openSlot < Globals.MAX_ACCOUNTS + 1)
             {
-                if (MSSQL.AccountExist(name) && MSSQL.CheckPassword(name, pass))
+                if (!IsLogged(name, Server.accounts))
                 {
-                    int id = Server.accounts[openSlot].GetIdFromDatabase(name);
-                    Server.accounts[openSlot] = new Account(id, name, incMSG.SenderConnection);
-                    Server.accounts[openSlot].LoadAccountFromDatabase(id);
-                    Logging.WriteMessage("Id: " + id + " username: " + name + " connection: " + incMSG.SenderConnection.ToString());
-                    if (!Server.accounts[openSlot].IsAccountActive()) { OutgoingData.SendActivateMessage(openSlot, incMSG.SenderConnection); return; }
+                    if (MSSQL.AccountExist(name) && MSSQL.CheckPassword(name, pass))
+                    {
+                        int id = Server.accounts[openSlot].GetIdFromDatabase(name);
+                        Server.accounts[openSlot] = new Account(id, name, incMSG.SenderConnection);
+                        Server.accounts[openSlot].LoadAccountFromDatabase(id);
+                        Logging.WriteMessage("Id: " + id + " username: " + name + " connection: " + incMSG.SenderConnection.ToString());
+                        if (!Server.accounts[openSlot].IsAccountActive()) { OutgoingData.SendActivateMessage(name, openSlot, incMSG.SenderConnection); return; }
+                        OutgoingData.SendLogin(name, incMSG.SenderConnection);
+                        OutgoingData.SendWhosOnline(Server.accounts);
+                    }
+                    else { OutgoingData.SendErrorMessage("Invalid Login", "Invalid username or password.", incMSG.SenderConnection); return; }
                 }
-                else { OutgoingData.SendErrorMessage("Invalid Login", "Invalid username or password.", incMSG.SenderConnection); return; }
+                else { Logging.WriteMessage("Account already logged in!"); OutgoingData.SendErrorMessage("Already Logged", "This account is already logged in!", incMSG.SenderConnection); return; }
             }
             else { Logging.WriteMessage("Server is full!"); OutgoingData.SendErrorMessage("Full", "The server is full!", incMSG.SenderConnection); return; }
         }
@@ -130,6 +152,24 @@ namespace Server
         private void HandleStatusChange(NetIncomingMessage incMSG)
         {
             Logging.WriteMessage(incMSG.SenderConnection.ToString() + " status changed. " + incMSG.SenderConnection.Status);
+
+            if (incMSG.SenderConnection.Status == NetConnectionStatus.Disconnected || incMSG.SenderConnection.Status == NetConnectionStatus.Disconnecting)
+            {
+                ClearSlot(incMSG.SenderConnection, Server.accounts);
+                OutgoingData.SendWhosOnline(Server.accounts);
+            }
+        }
+        private static void ClearSlot(NetConnection netConnection, Account[] accounts)
+        {
+            for (int i = 0; i < Globals.MAX_ACCOUNTS; i++)
+            {
+                if (accounts[i] != null && accounts[i].netConnection == netConnection)
+                {
+                    accounts[i] = null;
+                    accounts[i] = new Account();
+                    break;
+                }
+            }
         }
         private static int OpenSlot(Account[] accounts)
         {
@@ -141,6 +181,18 @@ namespace Server
                 }
             }
             return Globals.MAX_ACCOUNTS + 1;
+        }
+
+        private static bool IsLogged(string name, Account[] accounts)
+        {
+            for (int i = 0; i < Globals.MAX_ACCOUNTS; i++)
+            {
+                if (name == accounts[i].Name)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
