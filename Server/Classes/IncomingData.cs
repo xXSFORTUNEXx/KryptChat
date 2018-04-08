@@ -62,7 +62,6 @@ namespace Server
             Logging.WriteMessage(final, "Chat");
             OutgoingData.SendMessageToAll(final);
         }
-
         private void HandleActivateAccount(NetIncomingMessage incMSG)
         {
             string code = incMSG.ReadString();
@@ -182,7 +181,6 @@ namespace Server
             }
             return Globals.MAX_ACCOUNTS + 1;
         }
-
         private static bool IsLogged(string name, Account[] accounts)
         {
             for (int i = 0; i < Globals.MAX_ACCOUNTS; i++)
